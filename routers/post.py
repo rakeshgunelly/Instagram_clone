@@ -1,4 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+import random
+import shutil
+import string
+
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from routers.schemas import PostBase, PostDisplay
 from db.db_post import Session
 from db.database import get_db
@@ -25,3 +29,19 @@ def create(request: PostBase, db: Session = Depends(get_db)):
 @router.get('/all', response_model=List[PostDisplay])
 def posts(db: Session = Depends(get_db)):
     return db_post.get_all(db)
+
+
+@router.post('/image')
+def upload_image(image: UploadFile = File(...)):
+    # generating a unique filename to store image in local
+    letter = string.ascii_letters
+    rand_str = ''.join(random.choice(letter) for i in range(6))
+    new = f'_{rand_str}.'
+    filename = new.join(image.filename.rsplit('.', 1))
+    path = f'images/{filename}'
+
+    # opening file and copying the uploaded image
+    with open(path, 'w+b') as buffer:
+        shutil.copyfileobj(image.file, buffer)
+
+    return {'filename': path}
