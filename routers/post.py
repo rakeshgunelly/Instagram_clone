@@ -4,7 +4,7 @@ import string
 
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from routers.schemas import PostBase, PostDisplay, UserAuth
-from db.db_post import Session
+from sqlalchemy.orm.session import Session
 from db.database import get_db
 from db import db_post
 from typing import List

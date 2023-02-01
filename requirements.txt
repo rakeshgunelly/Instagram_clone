@@ -6,3 +6,4 @@ bcrypt
 python-multipart
 aiofiles
 python-jose
+social-auth-core
